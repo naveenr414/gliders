@@ -1,3 +1,5 @@
+
+
 var size = 30;
 var width = 800;
 var height = 270;
@@ -26,8 +28,13 @@ grid[6] = [0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
 grid[7] = [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
 grid[8] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
+var mouseX = 0;
+var mouseY = 0;
 
-
+$(document).mousemove(function(e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+}).mouseover(); 
 
 function drawGrid()
 {
