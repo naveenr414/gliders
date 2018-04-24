@@ -1,10 +1,12 @@
-
-
 var size = 30;
 var width = 800;
 var height = 270;
+var lastTime = 0
 
 var grid = [];
+var stage = "Updating";
+var ticks = 0;	
+var movesPer = 5;
 
 for(var i = 0;i<height/size;i++)
 {
@@ -30,17 +32,27 @@ grid[8] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 var mouseX = 0;
 var mouseY = 0;
+var mousePress = false;
+var blocksPlaced = 0;
+var targetBlocks = 2;
 
 $(document).mousemove(function(e) {
     mouseX = e.pageX;
     mouseY = e.pageY;
 }).mouseover(); 
 
+$(document).mousedown(function(e){
+	mousePress=true;
+});
+
+$(document).mouseup(function(e){
+	mousePress=false;
+});
+
 function drawGrid()
 {
 	var c = document.getElementById("mainCanvas").getContext("2d");
-	c.clearRect(0, 0, width,height);
-
+	c.fillStyle="#000000";
 	
 	for(var y = 0;y<grid.length;y++)
 	{
@@ -53,8 +65,63 @@ function drawGrid()
 	}
 
 	c.stroke();
-	
+}
 
+function update()
+{
+	var c = document.getElementById("mainCanvas").getContext("2d");
+	c.clearRect(0, 0, width,height);
+	
+	if(stage=="Updating")
+	{
+		updateGrid();
+		lastTime = new Date().getTime();
+		stage = "Waiting";
+	}
+	else if(stage=="Waiting")
+	{
+		var time = new Date().getTime();
+		if(time-lastTime>300)
+		{
+			ticks+=1;
+			if(ticks>movesPer)
+			{
+				ticks = 0;
+				stage = "Input";
+			}
+			else
+			{
+				stage = "Updating";
+			}
+		}
+	}
+	else if(stage=="Input")
+	{
+		var gridX = Math.floor(mouseX/size);
+		var gridY = Math.floor(mouseY/size);
+		
+		if(gridX<width/size && gridY<height/size)
+		{
+			c.fillStyle="#AAAAAA";
+			c.fillRect(gridX*size,gridY*size,size,size);
+					
+			if(mousePress && grid[gridY][gridX] == 0)
+			{
+				grid[gridY][gridX] = 1;
+				blocksPlaced+=1;
+				
+				if(blocksPlaced == targetBlocks)
+				{
+					blocksPlaced = 0;
+					stage = "Waiting";
+					lastTime = new Date().getTime();
+				}
+			}	
+		}
+	}
+	
+	drawGrid();
+	c.stroke();
 }
 
 function updateGrid()
@@ -116,9 +183,6 @@ function updateGrid()
 	}
 		
 	grid = newGrid.slice();
-	
-	drawGrid();
 }
 
-drawGrid();
-setInterval(updateGrid,300);
+setInterval(update,20);
