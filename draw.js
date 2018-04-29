@@ -8,6 +8,8 @@ var stage = "Updating";
 var ticks = 0;	
 var movesPer = 5;
 
+colors = [0,"#FF0000","#0000FF"];
+
 for(var i = 0;i<height/size;i++)
 {
 	var temp = []
@@ -21,14 +23,14 @@ for(var i = 0;i<height/size;i++)
 
 
 grid[0] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-grid[1] = [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
-grid[2] = [0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
-grid[3] = [0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0];
-grid[4] = [0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0];
-grid[5] = [0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0];
-grid[6] = [0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
+grid[1] = [0,2,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
+grid[2] = [0,2,2,0,0,0,0,2,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
+grid[3] = [0,2,2,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0];
+grid[4] = [0,0,2,0,0,0,1,0,0,1,2,0,2,0,0,0,0,0,0,0,1,1,0];
+grid[5] = [0,0,0,0,0,0,0,1,0,1,0,0,0,2,0,0,0,0,0,0,1,1,0];
+grid[6] = [2,0,2,0,2,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
 grid[7] = [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0];
-grid[8] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+grid[8] = [0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 var mouseX = 0;
 var mouseY = 0;
@@ -51,14 +53,13 @@ $(document).mouseup(function(e){
 
 function drawGrid()
 {
-	var c = document.getElementById("mainCanvas").getContext("2d");
-	c.fillStyle="#000000";
-	
+	var c = document.getElementById("mainCanvas").getContext("2d");	
 	for(var y = 0;y<grid.length;y++)
 	{
 		for(var x = 0;x<grid.length;x++)
 		{	
-			if(grid[y][x]==1){
+			if(grid[y][x]!=0){
+				c.fillStyle=colors[grid[y][x]];
 				c.fillRect(size*x,size*y,size,size);
 			}
 		}
@@ -139,7 +140,6 @@ function updateGrid()
 
 	for(var i = 0;i<newGrid.length;i++)
 	{
-
 		for(var j = 0;j<newGrid[0].length;j++)
 		{
 			var neighbors = 0;
@@ -150,18 +150,18 @@ function updateGrid()
 					if(j+xPlus>=0 && j+xPlus<newGrid[0].length
 					&& i+yPlus>=0 && i+yPlus<newGrid.length)
 					{
-						neighbors+=grid[i+yPlus][j+xPlus];
+						neighbors+=grid[i+yPlus][j+xPlus]==grid[i][j];
 					}
 				}
 			}
 			
-			neighbors-=grid[i][j];
+			neighbors-=grid[i][j]>0;
 			
 			if(grid[i][j]==0)
 			{
 				if(neighbors==3)
 				{
-					newGrid[i][j] = 1;
+					newGrid[i][j] = grid[i][j];
 				}
 				else
 				{
@@ -172,7 +172,7 @@ function updateGrid()
 			{
 				if(neighbors==2 || neighbors==3)
 				{
-					newGrid[i][j] = 1;
+					newGrid[i][j] = grid[i][j];
 				}
 				else
 				{
