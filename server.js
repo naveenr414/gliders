@@ -16,3 +16,20 @@ io.on('connection', function(socket){
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+function createRandom()
+{
+	var grid = [];
+	for(var i = 0;i<10;i++)
+	{
+		var temp = [];
+		for(var j = 0;j<10;j++)
+		{
+			temp.push(Math.floor(3*Math.random()));
+		}
+		grid.push(temp);
+	}
+	io.emit("grid",grid);
+}
+
+setInterval(createRandom,1000);
