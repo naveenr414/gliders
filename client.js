@@ -79,7 +79,7 @@ function checkInput(){
 			if(mousePress){
 				grid[gridY][gridX] = number;
 				blocksPlaced+=1;
-				socket.emit ('move',[gridY,gridX,number]);
+				socket.emit ('move',gridY,gridX,number);
 				
 				if(blocksPlaced == maxBlocksPlaced){
 					turn = false;
@@ -100,8 +100,10 @@ socket.on('color',function(c){
 	drawGrid();
 });
 
-socket.on('input', function(){
-	turn = true;
+socket.on('stage', function(stage){
+	if(stage=="input"){
+		turn = true;
+	}
 });
 
 /* We recieve what this player's number is */ 
