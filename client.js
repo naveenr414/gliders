@@ -7,15 +7,14 @@ var colors = [];
 
 var turn = false;
 var blocksPlaced = 0;
-const maxBlocksPlaced = 3;
+const maxBlocksPlaced = Namespace.maxBlocksPlaced;
 
-const blockSize = 30;
-const width = 300;
-const height = 300;
-const blocksHorizontal = width/blockSize;
-const blocksVertical = height/blockSize
+const gridSize = Namespace.gridSize;
+const blockSize = Namespace.blockSize;
+const width = blockSize*gridSize;
+const height = blockSize*gridSize;
 
-const hoverColor = "AAAAAA";
+const hoverColor = Namespace.hoverColor;
 
 var mouseX = 0;
 var mouseY = 0;
@@ -63,7 +62,7 @@ function drawGrid(){
 
 function withinGrid(x, y){
 	return x>=0 &&y>=0 
-	&& x<blocksHorizontal && y<blocksVertical;
+	&& x<gridSize && y<gridSize;
 }
 
 function checkInput(){

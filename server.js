@@ -2,13 +2,14 @@ var app = require('express')();
 var express = require("express");
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var settings = require('./settings');
 
-const updatesPer = 5;
-const maxBlocksPlaced = 3;
-const gridSize = 10;
-const timeBetweenUpdates = 1000;
+const updatesPer = settings.updatesPer;
+const maxBlocksPlaced = settings.maxBlocksPlaced;
+const gridSize = settings.gridSize;
+const timeBetweenUpdates = settings.timeBetweenUpdates;
 
-var colors = ["#FF0000","#0000FF"];
+var colors = settings.colors;
 var blocksPlaced = [];
 var grid = [];
 
