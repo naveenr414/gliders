@@ -38,10 +38,10 @@ $(document).mouseup(function(e){
 	mousePress=false;
 });
 
-function drawBlock(var gridX, var gridY, var c){
-	var startX = blockSize*x;
-	var startY = blockSize*y;
-	c.fillRect(gridX*blockSize,gridY*blockSize,blockSize,blockSize);
+function drawBlock(gridX, gridY, c){
+	var startX = blockSize*gridX;
+	var startY = blockSize*gridY;
+	c.fillRect(startX,startY,blockSize,blockSize);
 }
 
 function drawGrid(){
@@ -51,7 +51,7 @@ function drawGrid(){
 	for(var y = 0;y<grid.length;y++){
 		for(var x = 0;x<grid.length;x++){	
 			/* Draw non-empty blocks */ 
-			if(grid[y][x]!=0){
+			if(grid[y][x]!=-1){
 				c.fillStyle=colors[grid[y][x]];
 				drawBlock(x,y,c);
 			}
@@ -59,6 +59,11 @@ function drawGrid(){
 	}
 
 	c.stroke();
+}
+
+function withinGrid(x, y){
+	return x>=0 &&y>=0 
+	&& x<blocksHorizontal && y<blocksVertical;
 }
 
 function checkInput(){
@@ -70,18 +75,19 @@ function checkInput(){
 		var gridX = Math.floor(mouseX/blockSize);
 		var gridY = Math.floor(mouseY/blockSize);
 
-		var gridFree = grid[gridY][gridX]==0;
-		if(gridX<=blocksHorizontal && gridY<=blocksVertical && gridFree){
+		var gridFree = withinGrid(gridX,gridY) && grid[gridY][gridX]==-1;
+		if(gridFree){
 			/* Draw a block where we're hovering*/ 
 			c.fillStyle=hoverColor;
 			drawBlock(gridX,gridY,c);
 			
 			if(mousePress){
-				grid[gridY][gridX] = number;
+				grid[gridY][gridX] = playerNumber;
 				blocksPlaced+=1;
-				socket.emit ('move',gridY,gridX,number);
+				socket.emit ('move',gridY,gridX,playerNumber);
 				
 				if(blocksPlaced == maxBlocksPlaced){
+					blocksPlaced = 0;
 					turn = false;
 				}				
 			}	
@@ -101,8 +107,11 @@ socket.on('color',function(c){
 });
 
 socket.on('stage', function(stage){
-	if(stage=="input"){
+	if(stage=="Input"){
 		turn = true;
+	}
+	else{
+		turn = false;
 	}
 });
 

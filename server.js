@@ -8,12 +8,12 @@ const maxBlocksPlaced = 3;
 const gridSize = 10;
 const timeBetweenUpdates = 1000;
 
-var colors = [0,"#FF0000","#0000FF"];
-var blocksPlaced = [maxBlocksPlaced];
+var colors = ["#FF0000","#0000FF"];
+var blocksPlaced = [];
 var grid = [];
 
 //Three stages: Updating, Waiting and Input 
-var stage = "Updating";
+var stage = "Input";
 var lastTimeUpdated = 0;
 var totalUpdates = 0;
 var numPlayers = 0;
@@ -30,10 +30,9 @@ function initGrid(){
 	return g;
 }
 
-function withinGrid(var x, var y)
-{
+function withinGrid(x, y){
 	return x>=0 &&y>=0 
-	&& x<=gridSize && y<=gridSize;
+	&& x<gridSize && y<gridSize;
 }
 
 function update(){
@@ -42,7 +41,7 @@ function update(){
 		totalUpdates+=1;
 		lastTimeUpdated = new Date().getTime();
 		stage = "Waiting";
-		io.emit("grid",grid);
+		io.emit("gridUpdate",grid);
 	}
 	
 	/* Wait before updating the grid again */ 
@@ -56,6 +55,7 @@ function update(){
 			}
 			else{
 				stage = "Updating";
+				io.emit("stage",stage);
 			}
 		}
 	}
@@ -74,7 +74,6 @@ function update(){
 			for(var i = 0;i<numPlayers;i++){
 				blocksPlaced[i] = 0;
 			}
-			blocksPlaced[0] = maxBlocksPlaced;
 		}
 	}
 }
@@ -88,8 +87,7 @@ function updateGrid(){
 			for(var xPlus = -1;xPlus<=1;xPlus++){
 				for(var yPlus = -1;yPlus<=1;yPlus++){
 					if(withinGrid(x+xPlus,y+yPlus)){
-						if(grid[y+yPlus][x+xPlus]!=0)
-						{
+						if(grid[y+yPlus][x+xPlus]!=-1){
 							neighbors+=1;
 						}
 					}
@@ -97,20 +95,19 @@ function updateGrid(){
 			}
 			
 			// Don't count itself as a live neighbor 
-			if(grid[y][x]!=0)
-			{
+			if(grid[y][x]!=-1){
 				neighbors-=1;
 			}
 			
-			var gridDead = grid[y][x]==0;
+			var gridDead = grid[y][x]==-1;
 			
 			if(gridDead){
 				if(neighbors==3){
 					// TODO: Make this grid into the most popular neighbor
-					newGrid[y][x] = 1;
+					newGrid[y][x] = 0;
 				}
 				else{
-					newGrid[y][x] = 0;
+					newGrid[y][x] = -1;
 				}
 			}
 			else{
@@ -118,7 +115,7 @@ function updateGrid(){
 					newGrid[y][x] = grid[y][x];
 				}
 				else{
-					newGrid[y][x] = 0;
+					newGrid[y][x] = -1;
 				}
 			}
 		}
@@ -136,18 +133,21 @@ app.use('/', express.static(__dirname + '/'));
 io.on('connection', function(socket){
   console.log('a user connected');
   
-  numPlayers+=1;
-  blocksPlaced.push(0);
 
-  socket.emit("number",numPlayers);
+  socket.emit("playerNumber",numPlayers);
   io.emit('color',colors);
+  socket.emit("gridUpdate",grid);
+  socket.emit("stage",stage);
+
+  blocksPlaced.push(0);  
+  numPlayers+=1;
   
   socket.on('move', function(gridY,gridX,playerNumber){
 		var canPlace = blocksPlaced[playerNumber]!=maxBlocksPlaced;
-		var spaceFree = grid[gridY][gridX] == 0;
+		var spaceFree = grid[gridY][gridX] == -1;
 		if(canPlace && spaceFree){
 			grid[gridY][gridX] = playerNumber;
-			io.emit("grid",grid);
+			io.emit("gridUpdate",grid);
 			blocksPlaced[playerNumber]+=1;
 		}
 	});
