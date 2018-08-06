@@ -57,6 +57,10 @@ function drawGrid(){
 		}
 	}
 
+	//Draw the border
+	c.fillStyle = "#000000";
+	c.rect(0,0,width+1,height+1);
+
 	c.stroke();
 }
 
@@ -117,6 +121,11 @@ socket.on('stage', function(stage){
 /* We recieve what this player's number is */ 
 socket.on('playerNumber', function(n){
 	playerNumber = n;
+});
+
+$(document).ready(function(){
+	$("#mainCanvas").attr("width",width+5);
+	$("#mainCanvas").attr("height",height+5);
 });
 
 setInterval(checkInput,20);
