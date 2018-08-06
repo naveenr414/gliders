@@ -21,6 +21,7 @@ var mouseY = 0;
 var mousePress = false;
 
 var socket = io();
+var stat = "";
 
 
 /*Update the status of the mouse*/
@@ -70,7 +71,9 @@ function withinGrid(x, y){
 }
 
 function checkInput(){
+	$("#status").text(stat);
 	if(turn){
+		stat = "Waiting for user input"
 		var c = document.getElementById("mainCanvas").getContext("2d");	
 		drawGrid();
 		
@@ -90,6 +93,7 @@ function checkInput(){
 				socket.emit ('move',gridY,gridX,playerNumber);
 				
 				if(blocksPlaced == maxBlocksPlaced){
+					stat = "Waiting for other players";
 					blocksPlaced = 0;
 					turn = false;
 				}				
@@ -114,6 +118,7 @@ socket.on('stage', function(stage){
 		turn = true;
 	}
 	else{
+		stat = "Updating";
 		turn = false;
 	}
 });
@@ -128,4 +133,4 @@ $(document).ready(function(){
 	$("#mainCanvas").attr("height",height+5);
 });
 
-setInterval(checkInput,20);
+setInterval(checkInput,5);
