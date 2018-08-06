@@ -19,6 +19,10 @@ var lastTimeUpdated = 0;
 var totalUpdates = 0;
 var numPlayers = 0;
 
+Array.prototype.randomElement = function () {
+	return this[Math.floor(Math.random()*this.length)];
+}
+
 function initGrid(){
 	var g = [] 
 	for(var i = 0;i<gridSize;i++){
@@ -84,28 +88,26 @@ function updateGrid(){
 
 	for(var y = 0;y<gridSize;y++){
 		for(var x = 0;x<gridSize;x++){
-			var neighbors = 0;
+			var neighborList = [];
 			for(var xPlus = -1;xPlus<=1;xPlus++){
 				for(var yPlus = -1;yPlus<=1;yPlus++){
-					if(withinGrid(x+xPlus,y+yPlus)){
+					if(withinGrid(x+xPlus,y+yPlus) && 
+						!(xPlus==0 && yPlus==0)){
 						if(grid[y+yPlus][x+xPlus]!=-1){
-							neighbors+=1;
+							neighborList.push(grid[y+yPlus][x+xPlus]);
 						}
 					}
 				}
 			}
-			
-			// Don't count itself as a live neighbor 
-			if(grid[y][x]!=-1){
-				neighbors-=1;
-			}
+
+			var neighbors = neighborList.length;
 			
 			var gridDead = grid[y][x]==-1;
 			
 			if(gridDead){
 				if(neighbors==3){
 					// TODO: Make this grid into the most popular neighbor
-					newGrid[y][x] = 0;
+					newGrid[y][x] = neighborList.randomElement();
 				}
 				else{
 					newGrid[y][x] = -1;
