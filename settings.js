@@ -11,5 +11,5 @@ moduleName.exports = this.Namespace = {
 	gridSize: 10, 
 	blockSize: 30, // In Pixels 
 	colors: ["#FF0000","#0000FF"], 
-	hoverColor: "AAAAAA", 
+	hoverColor: "#AAAAAA", 
 };
