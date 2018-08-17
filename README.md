@@ -27,3 +27,14 @@ The multiplayer variant has similar rules to the original version, except cells 
 
 The game is turn based, so every turn, each player places down a certain number of cells, and after all players have placed down their cells, the game updates for some number of iterations, after which the players get to place more cells. 
 
+![alt text][inputwaiting]
+
+[inputwaiting]: images/inputWaiting.png "Player about to enter location of a block"
+
+(The user is about to enter the location of a block) 
+
+![alt text][colorboard]
+
+[colorboard]: images/colorfulBoard.png "The board after several turns" 
+
+(What the board looks like after several turns) 
