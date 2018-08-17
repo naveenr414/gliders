@@ -22,6 +22,7 @@ var mousePress = false;
 
 var socket = io();
 var stat = "";
+var scores = {};
 
 
 /*Update the status of the mouse*/
