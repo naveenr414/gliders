@@ -38,3 +38,10 @@ The game is turn based, so every turn, each player places down a certain number 
 [colorboard]: images/colorfulBoard.png "The board after several turns" 
 
 (What the board looks like after several turns) 
+
+## Instructions to run 
+
+To run the game, from command line run 	
+` node server.js `
+
+Then navigate to `localhost:3000` to play the game. 
