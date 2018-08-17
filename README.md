@@ -9,7 +9,8 @@ Conway's game of life simulates cellular automation as a zero player game based 
 3. Living cells with more than 3 living neighbors die
 4. Dead cells with 3 living neighbors become a living cell
 
-Blacks cells are alive, while white cells are dead, like below. 
+Blacks cells are alive, while white cells are dead, like below.
+
 ![alt text][blackwhite]
 
 [blackwhite]: images/singlePlayer.gif "Screenshot of Conway's game of life"
