@@ -1,4 +1,4 @@
-# Conway's Game of Life
+# Gliders - A Multiplayer Conway's Game of Life
 
 ## Game Rules
 
